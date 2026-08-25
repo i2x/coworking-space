@@ -43,11 +43,11 @@ const pct = computed(() => ((cur.value + 1) / total) * 100)
 
     <!-- 2 : เดโม -->
     <section class="slide" :class="{ active: cur === 1, before: cur > 1 }">
-      <span class="kicker">ทบทวนจากเดโม</span>
-      <h1>🎬 สิ่งที่เพิ่งเห็นไปในเดโม</h1>
+      <span class="kicker">Demo</span>
+      <h1>🎬 ทบทวนจากเดโม</h1>
       <div class="grid c2">
         <div class="panel">
-          <h3>ที่เพิ่งทำให้ดู</h3>
+          <h3>สิ่งที่เดโมไป</h3>
           <ol class="steps">
             <li>ต่อกระเป๋า MetaMask</li>
             <li>เลือกห้อง ดูตารางว่างรายชั่วโมง</li>
