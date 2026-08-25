@@ -64,7 +64,7 @@ function withdraw() {
 
 <template>
   <div class="container page">
-    <h1>🔧 Admin Dashboard</h1>
+    <h1>🔧 หน้าเจ้าของห้อง</h1>
 
     <div v-if="!isAdmin" class="notice error">
       หน้านี้สำหรับเจ้าของระบบ — เชื่อมต่อด้วย wallet ที่ deploy contract (owner) ก่อน

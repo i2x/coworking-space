@@ -17,14 +17,34 @@ function onKey(e) {
     document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()
   }
 }
-onMounted(() => window.addEventListener('keydown', onKey))
-onUnmounted(() => window.removeEventListener('keydown', onKey))
+// navbar สูงไม่คงที่ (เมนู "เจ้าของห้อง" โผล่/ตัดบรรทัดตามจอ) — วัดของจริงมาคำนวณความสูงสไลด์
+const navH = ref(68)
+let navObserver
+function measureNav() {
+  navH.value = document.querySelector('.navbar')?.offsetHeight ?? 68
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', onKey)
+  measureNav()
+  const nav = document.querySelector('.navbar')
+  if (nav && 'ResizeObserver' in window) {
+    navObserver = new ResizeObserver(measureNav)
+    navObserver.observe(nav)
+  }
+  window.addEventListener('resize', measureNav)
+})
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKey)
+  window.removeEventListener('resize', measureNav)
+  navObserver?.disconnect()
+})
 
 const pct = computed(() => ((cur.value + 1) / total) * 100)
 </script>
 
 <template>
-  <div class="deck">
+  <div class="deck" :style="{ '--nav-h': navH + 'px' }">
     <!-- 1 : ปก -->
     <section class="slide" :class="{ active: cur === 0, before: cur > 0 }">
       <div class="cup-bg">☕</div>
@@ -53,7 +73,7 @@ const pct = computed(() => ((cur.value + 1) / total) * 100)
             <li>เลือกห้อง ดูตารางว่างรายชั่วโมง</li>
             <li>จองและจ่าย ETH</li>
             <li>ดูรายการใน "การจองของฉัน" และยกเลิก</li>
-            <li>มุมมองเจ้าของร้านในหน้า Admin</li>
+            <li>มุมมองเจ้าของห้องในหน้า "เจ้าของห้อง"</li>
           </ol>
         </div>
         <div class="panel soft">
@@ -245,25 +265,26 @@ b.cancelled = <span class="kw">true</span>;         <span class="cmt">// บั�
     <!-- 8 : withdraw -->
     <section class="slide" :class="{ active: cur === 7, before: cur > 7 }">
       <span class="kicker">ฟังก์ชันหลัก 3/4</span>
-      <h1><span class="mono lg">withdraw()</span> — เงินในสัญญาแบ่งเป็น 2 กอง</h1>
+      <h1><span class="mono lg">withdraw()</span> — เงินก้อนเดียว แต่สถานะเปลี่ยนตามเวลา</h1>
+      <p class="lead">เงินค่าจองทั้งหมดกองรวมอยู่ในสัญญาก้อนเดียว — แต่ตอนร้านกดถอน ระบบจะคิดก่อนว่าส่วนไหนอยู่ในสถานะถอนได้</p>
       <div class="moneybar">
         <div class="seg lock">
-          <small>🔒 กองที่ล็อกไว้ — ร้านถอนไม่ได้</small>
-          <b>เงินของใบจองที่ "ยังไม่ถึงเวลาเริ่ม"</b>
+          <small>🔒 สถานะ: ยังถอนไม่ได้</small>
+          <b>ส่วนของใบจองที่ "ยังไม่ถึงเวลาเริ่ม"</b>
         </div>
         <div class="seg open">
-          <small>✅ กองที่ถอนได้</small>
-          <b>เงินของใบจองที่ "เริ่มใช้บริการไปแล้ว"</b>
+          <small>✅ สถานะ: ถอนได้</small>
+          <b>ส่วนของใบจองที่ "เริ่มใช้บริการไปแล้ว"</b>
         </div>
       </div>
       <div class="grid c2">
         <div class="panel soft">
           <h3>กติกา</h3>
           <ul class="marks tight">
-            <li><b>ใบจองที่ยังไม่เริ่ม → เงินถูกล็อก</b> เพราะลูกค้ายังมีสิทธิ์ยกเลิกแล้วขอเงินคืน สัญญาจึงต้องเก็บเงินก้อนนี้ไว้ให้ครบ</li>
-            <li><b>พอถึงเวลาเริ่มของใบจอง → เงินย้ายไปกองถอนได้เอง</b> ไม่ต้องมีใครกดอะไร เพราะสูตรคำนวณจากเวลาปัจจุบันทุกครั้งที่ร้านกดถอน</li>
+            <li><b>ใบจองที่ยังไม่เริ่ม → ส่วนนั้นยังถอนไม่ได้</b> เพราะลูกค้ายังมีสิทธิ์ยกเลิกแล้วขอเงินคืน สัญญาต้องกันเงินส่วนนี้ไว้ให้ครบ</li>
+            <li><b>พอถึงเวลาเริ่มของใบจอง → ส่วนนั้นเปลี่ยนสถานะเป็นถอนได้เอง</b> ไม่ต้องมีใครกดอะไร เพราะทุกครั้งที่กดถอน ระบบคำนวณใหม่จากเวลาปัจจุบัน</li>
           </ul>
-          <p style="margin-top: 8px"><b>ตัวอย่าง:</b> ในสัญญามี 10 ETH — มาจากใบจองที่ยังไม่เริ่ม 6 ETH → ร้านกดถอนได้แค่ 4 ETH</p>
+          <p style="margin-top: 8px"><b>ตัวอย่าง:</b> ในสัญญามี 10 ETH — เป็นของใบจองที่ยังไม่เริ่ม 6 ETH → ร้านกดถอนได้แค่ 4 ETH</p>
         </div>
         <div class="panel">
           <h3>เหตุผลที่ออกแบบแบบนี้</h3>
@@ -407,7 +428,7 @@ b.cancelled = <span class="kw">true</span>;         <span class="cmt">// บั�
 <style scoped>
 .deck {
   position: relative;
-  height: calc(100vh - 68px);
+  height: calc(100vh - var(--nav-h, 68px));
   overflow: hidden;
 }
 
@@ -543,7 +564,7 @@ h1 .hl::after {
 @media (max-width: 900px) {
   .deck { height: auto; overflow: visible; }
   .slide { position: relative; inset: auto; opacity: 1; visibility: visible; transform: none; display: none; }
-  .slide.active { display: flex; min-height: calc(100vh - 68px); }
+  .slide.active { display: flex; min-height: calc(100vh - var(--nav-h, 68px)); }
   .grid.c2, .grid.c3 { grid-template-columns: 1fr; }
   .arch { flex-direction: column; }
   .arch .link { transform: rotate(90deg); }
