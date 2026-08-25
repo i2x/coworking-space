@@ -135,6 +135,20 @@ a { color: inherit; text-decoration: none; }
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
   background: rgb(255 246 234 / 0.35);
 }
+/* แสตมป์ "จองไว้" บนการ์ดห้องที่เราจองอยู่ */
+.my-stamp {
+  position: absolute; top: 10px; left: 10px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgb(255 255 255 / 0.95);
+  border: 2px dashed var(--accent); color: var(--accent);
+  font-family: 'Mitr', sans-serif; font-weight: 600; font-size: 13px;
+  padding: 3px 12px 3px 5px; border-radius: 999px;
+  transform: rotate(-3deg);
+  box-shadow: var(--shadow-soft);
+}
+.room-card:hover .my-stamp { transform: rotate(-3deg) scale(1.06); }
+.my-stamp { transition: transform 0.18s; }
+
 .closed-sign {
   font-family: 'Mitr', sans-serif; font-weight: 600; font-size: 15px;
   background: rgb(255 255 255 / 0.94); color: var(--danger);
@@ -176,6 +190,12 @@ a { color: inherit; text-decoration: none; }
   font-family: ui-monospace, 'SF Mono', monospace; font-size: 12.5px;
   background: var(--cream); padding: 3px 10px; border-radius: 999px;
   border: 1.5px dashed var(--brand); color: var(--brand-deep); font-weight: 600;
+}
+.balance-chip {
+  font-family: 'Mitr', sans-serif; font-size: 13.5px; font-weight: 600;
+  background: var(--accent-soft); color: var(--accent);
+  padding: 4px 12px; border-radius: 999px;
+  border: 1.5px solid var(--accent); white-space: nowrap;
 }
 
 /* ---------- slot picker ---------- */

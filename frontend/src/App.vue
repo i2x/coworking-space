@@ -26,6 +26,7 @@ const currentChainName = computed(() => CHAIN_NAMES[chainId.value] ?? `chain ${c
         <RouterLink to="/">ห้องทั้งหมด</RouterLink>
         <RouterLink to="/my-bookings">การจองของฉัน</RouterLink>
         <RouterLink v-if="isAdmin" to="/admin">🔧 Admin</RouterLink>
+        <RouterLink to="/present">📽️ นำเสนอ</RouterLink>
       </div>
       <ConnectButton />
     </div>

@@ -5,12 +5,12 @@ const path = require("path");
 // รายการห้อง: 6 ห้อง 3 แบบ
 // units = จำนวนการจองพร้อมกันต่อ slot (hot desk = ที่นั่งในโซน, ห้องประชุม/ส่วนตัว = 1 จองทั้งห้อง)
 const ROOMS = [
-  { name: "Hot Desk A1", type: "hotdesk", capacity: 8, units: 8, priceEth: "0.001", image: "hotdesk" },   // โต๊ะยาวกลางห้อง
-  { name: "Hot Desk A2", type: "hotdesk", capacity: 6, units: 6, priceEth: "0.001", image: "hotdesk2" },  // บาร์ริมหน้าต่าง
-  { name: "Hot Desk A3", type: "hotdesk", capacity: 5, units: 5, priceEth: "0.001", image: "hotdesk3" },  // มุมโซฟา
-  { name: "Meeting Room M1", type: "meeting", capacity: 4, units: 1, priceEth: "0.004", image: "meeting" },
-  { name: "Meeting Room M2", type: "meeting", capacity: 6, units: 1, priceEth: "0.005", image: "meeting2" },
-  { name: "Private Office P1", type: "office", capacity: 1, units: 1, priceEth: "0.002", image: "office" },
+  { name: "Hot Desk A1", type: "hotdesk", capacity: 8, units: 8, priceEth: "0.000001", image: "hotdesk" },   // โต๊ะยาวกลางห้อง
+  { name: "Hot Desk A2", type: "hotdesk", capacity: 6, units: 6, priceEth: "0.000001", image: "hotdesk2" },  // บาร์ริมหน้าต่าง
+  { name: "Hot Desk A3", type: "hotdesk", capacity: 5, units: 5, priceEth: "0.000001", image: "hotdesk3" },  // มุมโซฟา
+  { name: "Meeting Room M1", type: "meeting", capacity: 4, units: 1, priceEth: "0.000004", image: "meeting" },
+  { name: "Meeting Room M2", type: "meeting", capacity: 6, units: 1, priceEth: "0.000005", image: "meeting2" },
+  { name: "Private Office P1", type: "office", capacity: 1, units: 1, priceEth: "0.000002", image: "office" },
 ];
 
 async function main() {

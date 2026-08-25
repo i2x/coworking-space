@@ -1,14 +1,28 @@
 <script setup>
 import { formatEther } from 'viem'
 import { roomImage, roomTypeLabel } from '../lib/rooms'
+import AvatarBadge from './AvatarBadge.vue'
 
-defineProps({ room: { type: Object, required: true } })
+defineProps({
+  room: { type: Object, required: true },
+  // จำนวนใบจองของเราในห้องนี้ที่ยังไม่จบ — มากกว่า 0 = แปะแสตมป์
+  myCount: { type: Number, default: 0 },
+  address: { type: String, default: '' },
+})
 </script>
 
 <template>
   <RouterLink :to="`/room/${room.id}`" class="card room-card" :class="{ closed: !room.active }">
     <div class="img-wrap">
       <img :src="roomImage(room.imageURI)" :alt="room.name" />
+      <span
+        v-if="myCount > 0"
+        class="my-stamp"
+        :title="`คุณจองห้องนี้ไว้ ${myCount} รายการ`"
+      >
+        <AvatarBadge :address="address" :size="24" :show-address="false" />
+        จองไว้{{ myCount > 1 ? ` ×${myCount}` : '' }}
+      </span>
       <div v-if="!room.active" class="closed-overlay">
         <span class="closed-sign">🚧 ปิดให้บริการชั่วคราว</span>
       </div>
