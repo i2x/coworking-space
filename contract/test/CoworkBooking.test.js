@@ -222,6 +222,31 @@ describe("CoworkBooking", function () {
     });
   });
 
+  describe("transferOwnership", () => {
+    it("owner โอนสิทธิ์ได้ — คนใหม่เป็น admin, คนเก่าหมดสิทธิ์", async () => {
+      await expect(booking.transferOwnership(alice.address))
+        .to.emit(booking, "OwnershipTransferred")
+        .withArgs(owner.address, alice.address);
+      expect(await booking.owner()).to.equal(alice.address);
+
+      // คนใหม่ใช้สิทธิ์ admin ได้
+      await booking.connect(alice).addRoom("X", "hotdesk", 1, 1, price, "x");
+      // คนเก่าโดนปฏิเสธ
+      await expect(
+        booking.addRoom("Y", "hotdesk", 1, 1, price, "y")
+      ).to.be.revertedWith("not owner");
+    });
+
+    it("คนอื่นโอนไม่ได้ / โอนไป address ศูนย์ไม่ได้", async () => {
+      await expect(
+        booking.connect(alice).transferOwnership(alice.address)
+      ).to.be.revertedWith("not owner");
+      await expect(
+        booking.transferOwnership("0x0000000000000000000000000000000000000000")
+      ).to.be.revertedWith("zero address");
+    });
+  });
+
   describe("views", () => {
     it("getUserBookings คืนเฉพาะของ user นั้น และ getSlots นับจำนวนจองถูก", async () => {
       const start = await futureSlot();

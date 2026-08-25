@@ -87,6 +87,8 @@ reentrancy guard ตอนโอนเงิน, กันจองซ้อน�
 ## แก้/ปรับแต่ง
 
 - รายการห้องเริ่มต้น: `contract/scripts/deploy.js`
-- นโยบายยกเลิก (`cancelWindow`): เรียก `setCancelWindow` หรือแก้ค่าเริ่มต้นใน contract
+- นโยบายยกเลิก: ค่าคงที่ `CANCEL_WINDOW` (2 ชม.) และจองล่วงหน้าไม่เกิน `MAX_ADVANCE` (3 วัน)
+  — ตั้งใจล็อกเป็น constant เพื่อไม่ให้ admin แก้กติกาย้อนหลังกับการจองที่มีอยู่
+- ย้ายกระเป๋า admin: เรียก `transferOwnership(newOwner)` ด้วยกระเป๋า owner ปัจจุบัน
 - รูปห้อง: `frontend/src/assets/rooms/` (map ใน `frontend/src/lib/rooms.js`)
 - sprite avatar: `frontend/src/assets/avatar-sprite.png` (grid 8×4 — ห้ามสลับตำแหน่งตัวที่มีอยู่)

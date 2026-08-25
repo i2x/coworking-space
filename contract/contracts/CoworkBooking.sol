@@ -38,7 +38,8 @@ contract CoworkBooking {
     /// จองล่วงหน้าได้ไม่เกิน 3 วัน — กันคนกวนจองยาว ๆ ล็อก slot/ทำให้ loop คืนเงินบวม
     uint256 public constant MAX_ADVANCE = 3 days;
     /// ยกเลิกได้ฟรี (คืนเงินเต็ม) ถ้ายกเลิกก่อนเวลาเริ่มอย่างน้อยเท่านี้
-    uint256 public cancelWindow = 2 hours;
+    /// ตั้งใจเป็น constant: กติกาที่ลูกค้าเห็นตอนจอง = กติกาที่ได้จริงตลอดไป admin แก้ย้อนหลังไม่ได้
+    uint256 public constant CANCEL_WINDOW = 2 hours;
 
     Room[] private rooms;
     Booking[] private bookings;
@@ -62,6 +63,7 @@ contract CoworkBooking {
     );
     event BookingCancelled(uint256 indexed bookingId, address indexed user, uint256 refund);
     event Withdrawn(address indexed to, uint256 amount);
+    event OwnershipTransferred(address indexed oldOwner, address indexed newOwner);
 
     // ---------- Modifiers ----------
 
@@ -154,8 +156,11 @@ contract CoworkBooking {
         }
     }
 
-    function setCancelWindow(uint256 newWindow) external onlyOwner {
-        cancelWindow = newWindow;
+    /// โอนสิทธิ์ admin ให้ address ใหม่ (เผื่อย้ายกระเป๋า/กู้สถานการณ์ key เดิมไม่ปลอดภัย)
+    function transferOwnership(address newOwner) external onlyOwner {
+        require(newOwner != address(0), "zero address");
+        emit OwnershipTransferred(owner, newOwner);
+        owner = newOwner;
     }
 
     /// ถอนได้เฉพาะส่วนที่ไม่ติดภาระคืนเงิน (การจองในอนาคตที่ยังยกเลิกได้)
@@ -210,7 +215,7 @@ contract CoworkBooking {
         emit RoomBooked(bookingId, roomId, msg.sender, startTime, endTime, price);
     }
 
-    /// ยกเลิกก่อนเวลาเริ่ม: คืนเงินเต็มถ้ายกเลิกล่วงหน้า >= cancelWindow, ไม่งั้นไม่คืน
+    /// ยกเลิกก่อนเวลาเริ่ม: คืนเงินเต็มถ้ายกเลิกล่วงหน้า >= CANCEL_WINDOW, ไม่งั้นไม่คืน
     function cancelBooking(uint256 bookingId) external nonReentrant {
         Booking storage b = _booking(bookingId);
         require(b.user == msg.sender, "not your booking");
@@ -225,7 +230,7 @@ contract CoworkBooking {
         }
 
         uint256 refund = 0;
-        if (block.timestamp + cancelWindow <= b.startTime) {
+        if (block.timestamp + CANCEL_WINDOW <= b.startTime) {
             refund = b.totalPrice;
         }
         if (refund > 0) {
