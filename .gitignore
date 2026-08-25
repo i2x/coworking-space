@@ -1,0 +1,15 @@
+# secrets — ห้าม commit เด็ดขาด
+.env
+*.env
+
+# dependencies / build outputs
+node_modules/
+dist/
+cache/
+artifacts/
+typechain-types/
+coverage/
+coverage.json
+
+# os
+.DS_Store
