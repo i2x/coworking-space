@@ -81,7 +81,7 @@ const pct = computed(() => ((cur.value + 1) / total) * 100)
           <ul class="marks">
             <li>ทุกครั้งที่จองหรือยกเลิก MetaMask ขอลายเซ็น — เพราะเป็นการเขียนลง blockchain จริง</li>
             <li>ตารางห้องว่างดูได้โดยไม่ต้อง login และไม่เสีย gas — เป็นการอ่านจาก contract ตรง ๆ</li>
-            <li>ระบบนี้ไม่มี server หรือ database ของตัวเองเลย</li>
+            <li>server ทำหน้าที่เป็น frontend เท่านั้น — กติกาและข้อมูลจริงทั้งหมดบังคับอยู่ที่ smart contract</li>
           </ul>
           <p style="margin-top: 8px">→ ที่เหลือของการนำเสนอ คือเบื้องหลังว่า contract ทำงานยังไง</p>
         </div>
